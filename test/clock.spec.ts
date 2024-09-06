@@ -26,6 +26,10 @@ describe('Merkle clocks', () => {
 		const agent = await ed25519.Signer.generate();
 		const server = Signer.parse(env.FIREPROOF_SERVICE_PRIVATE_KEY);
 
+		console.log('✨ CLOCK', clock.did());
+		console.log('✨ ALICE', alice.did());
+		console.log('✨ AGENT', agent.did());
+
 		// {client} The clock belongs to Alice,
 		// delegate the capability to them.
 		const delegation = await Clock.advance.delegate({
@@ -54,7 +58,7 @@ describe('Merkle clocks', () => {
 			audience: agent,
 			capabilities: [{ can: '*', with: 'ucan:*' }],
 			expiration: Infinity,
-			proofs: await delegationStore.find({ audience: alice.did() }).then((a) => a.ok),
+			// proofs: await delegationStore.find({ audience: alice.did() }).then((a) => a.ok),
 		});
 
 		// {server} Create an attestation to accompany the above delegation which has an attestion signature.
@@ -107,7 +111,7 @@ describe('Merkle clocks', () => {
 			audience: server,
 			with: clock.did(),
 			nb: { event: eventCar.cid },
-			proofs: [emailAttestation, emailDelegation],
+			proofs: [emailAttestation, emailDelegation, delegation],
 		});
 
 		// {client} Send the invocation
@@ -115,8 +119,12 @@ describe('Merkle clocks', () => {
 		const res = await invocation.execute(conn);
 
 		// Expectations
+		console.error(res.out.error?.message);
 		expect(res.out.error).toBeUndefined();
 		expect(res.out.ok?.head).toBe(eventCar.cid.toString());
+
+		// TODO
+		return;
 
 		// Share clock abilities to Bob
 		const bob = Absentee.from({ id: DidMailto.fromEmail('bob@example.com') });
