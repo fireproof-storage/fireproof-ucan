@@ -316,12 +316,10 @@ const createService = (ctx: FireproofServiceContext) => {
 				const expiresInSeconds = 60 * 60 * 24; // 1 day
 
 				const endpoint =
-					ctx.url.hostname === 'localhost'
-						? `${ctx.url.origin}/r2/${link.toString()}`
-						: `https://${ctx.bucketName}.${ctx.accountId}.r2.cloudflarestorage.com`;
+					ctx.url.hostname === 'localhost' ? ctx.url.origin : `https://${ctx.bucketName}.${ctx.accountId}.r2.cloudflarestorage.com`;
 
 				const url = new URL(endpoint);
-				url.pathname = link.toString();
+				url.pathname = (ctx.url.hostname === 'localhost' ? '/r2/' : '/') + link.toString();
 				url.searchParams.set('X-Amz-Expires', expiresInSeconds.toString());
 
 				const signedUrl = await R2.sign(
