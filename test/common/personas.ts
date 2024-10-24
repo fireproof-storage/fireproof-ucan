@@ -1,6 +1,6 @@
 import * as DidMailto from '@web3-storage/did-mailto';
 
-import { Absentee, ed25519 } from '@ucanto/principal';
+import { Absentee } from '@ucanto/principal';
 import { Signer } from '@ucanto/principal/ed25519';
 import { env } from 'cloudflare:test';
 

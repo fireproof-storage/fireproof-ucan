@@ -3,24 +3,25 @@ import { CAR, Invocation, Receipt } from '@ucanto/core';
 import { RecordNotFound } from '@web3-storage/upload-api/errors';
 
 // 🚀
-
-export const create = () => new AgentStore();
+export function create() {
+	return new AgentStore();
+}
 
 // TYPES
 
 interface Model {
-	store: Record<string, CAR.Model>;
-	index: Record<string, { root: API.Link; at: string }[]>;
+	readonly store: Record<string, CAR.Model>;
+	readonly index: Record<string, { root: API.Link; at: string }[]>;
 }
 
 // IMPLEMENTATION
 
 class AgentStore implements API.AgentStore {
-	model: Model;
-	invocations: InvocationLookup;
-	receipts: ReceiptLookup;
+	readonly model: Model;
+	readonly invocations: InvocationLookup;
+	readonly receipts: ReceiptLookup;
 
-	constructor({ store = Object.create(null), index = Object.create(null) } = {}) {
+	constructor({ store = {}, index = {} } = {}) {
 		const model = { store, index };
 		this.model = model;
 
@@ -41,13 +42,13 @@ class AgentStore implements API.AgentStore {
 
 		for (const { invocation, receipt } of message.index) {
 			if (invocation) {
-				let entry = index[`/${invocation.task.toString()}/invocation/`] ?? [];
+				const entry = index[`/${invocation.task.toString()}/invocation/`] ?? [];
 				entry.push({ root: invocation.invocation.link(), at });
 				index[`/${invocation.task.toString()}/invocation/`] = entry;
 			}
 
 			if (receipt) {
-				let entry = index[`/${receipt.task.toString()}/receipt/`] ?? [];
+				const entry = index[`/${receipt.task.toString()}/receipt/`] ?? [];
 				entry.push({ root: receipt.receipt.link(), at });
 				index[`/${receipt.task.toString()}/receipt/`] = entry;
 			}
@@ -58,7 +59,7 @@ class AgentStore implements API.AgentStore {
 }
 
 class InvocationLookup {
-	model: Model;
+	readonly model: Model;
 
 	/**
 	 * @param {Model} model
@@ -81,7 +82,7 @@ class InvocationLookup {
 }
 
 class ReceiptLookup {
-	model: Model;
+	readonly model: Model;
 
 	constructor(model: Model) {
 		this.model = model;
