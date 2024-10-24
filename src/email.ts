@@ -2,17 +2,21 @@ export async function send({
 	postmarkToken,
 	recipient,
 	sender,
+	senderName,
 	template,
 	templateData,
+	postmarkappUrl
 }: {
 	postmarkToken: string;
 	recipient: string;
 	sender?: string;
+	senderName?: string;
 	template: string;
 	templateData: Record<string, any>;
+	postmarkappUrl?: string
 }) {
 	const email = sender || 'no-reply@fireproof.storage';
-	const rsp = await fetch('https://api.postmarkapp.com/email/withTemplate', {
+	const rsp = await fetch(postmarkappUrl || 'https://api.postmarkapp.com/email/withTemplate', {
 		method: 'POST',
 		headers: {
 			Accept: 'text/json',
@@ -20,7 +24,7 @@ export async function send({
 			'X-Postmark-Server-Token': postmarkToken,
 		},
 		body: JSON.stringify({
-			From: `Fireproof <${email}>`,
+			From: `${senderName || 'Fireproof'} <${email}>`,
 			To: recipient,
 			TemplateAlias: template,
 			TemplateModel: templateData,

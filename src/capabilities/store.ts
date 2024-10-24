@@ -42,7 +42,7 @@ export const add = capability({
 		const result = equalLink(claim, from);
 		if (result.error) {
 			return result;
-		} else if (claim.nb.size !== undefined && from.nb.size !== undefined) {
+		} else if (!(typeof claim.nb.size === "number" && typeof from.nb.size === "number")) {
 			return claim.nb.size > from.nb.size ? fail(`Size constraint violation: ${claim.nb.size} > ${from.nb.size}`) : ok({});
 		} else {
 			return ok({});

@@ -75,7 +75,7 @@ export const provideAdvanced =
  * @implements {API.InvalidAudience}
  */
 class InvalidAudience extends Failure {
-	cause: API.Failure;
+	readonly cause: API.Failure;
 
 	constructor({ cause }: { cause: API.Failure }) {
 		super();

@@ -3,7 +3,6 @@ import * as Server from '@ucanto/server';
 import { DelegationsStorageQuery } from '@web3-storage/upload-api';
 
 // 🚀
-
 export function create() {
 	return new DelegationStore();
 }
@@ -11,11 +10,7 @@ export function create() {
 // IMPLEMENTATION
 
 class DelegationStore implements API.DelegationsStorage {
-	store: Server.API.Delegation[];
-
-	constructor() {
-		this.store = [];
-	}
+	readonly store: Server.API.Delegation[] = []
 
 	async putMany(delegations: Server.API.Delegation[]) {
 		this.store.push(...delegations);

@@ -1,30 +1,28 @@
 import * as API from '@web3-storage/upload-api/types';
 import * as Server from '@ucanto/server';
 
-import { CAR } from '@ucanto/core';
 import { DelegationsStorageQuery } from '@web3-storage/upload-api';
 import { extract } from '@ucanto/core/delegation';
 
 // 🚀
-
 export function create(bucket: R2Bucket, kv: KVNamespace) {
 	return new DelegationStore(bucket, kv);
 }
 
 // TYPES
 
-type KVRecord = {
-	data: string;
+interface KVRecord {
+	readonly data: string;
 
-	issuer: string;
-	audience: string;
+	readonly issuer: string;
+	readonly audience: string;
 };
 
 // IMPLEMENTATION
 
 class DelegationStore implements API.DelegationsStorage {
-	bucket: R2Bucket;
-	kv: KVNamespace;
+	readonly bucket: R2Bucket;
+	readonly kv: KVNamespace;
 
 	constructor(bucket: R2Bucket, kv: KVNamespace) {
 		this.bucket = bucket;

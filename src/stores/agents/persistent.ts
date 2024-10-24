@@ -6,17 +6,18 @@ import { CAR, Invocation, Receipt } from '@ucanto/core';
 import { CID } from 'multiformats/cid';
 
 // 🚀
-
-export const create = (bucket: R2Bucket, kv: KVNamespace) => new AgentStore(bucket, kv);
+export function create(bucket: R2Bucket, kv: KVNamespace) {
+	return new AgentStore(bucket, kv);
+}
 
 // IMPLEMENTATION
 
 class AgentStore implements API.AgentStore {
-	bucket: R2Bucket;
-	kv: KVNamespace;
+	readonly bucket: R2Bucket;
+	readonly kv: KVNamespace;
 
-	invocations: InvocationLookup;
-	receipts: ReceiptLookup;
+	readonly invocations: InvocationLookup;
+	readonly receipts: ReceiptLookup;
 
 	constructor(bucket: R2Bucket, kv: KVNamespace) {
 		this.bucket = bucket;
@@ -52,8 +53,8 @@ class AgentStore implements API.AgentStore {
 }
 
 class InvocationLookup {
-	bucket: R2Bucket;
-	kv: KVNamespace;
+	readonly bucket: R2Bucket;
+	readonly kv: KVNamespace;
 
 	constructor(bucket: R2Bucket, kv: KVNamespace) {
 		this.bucket = bucket;
@@ -70,8 +71,8 @@ class InvocationLookup {
 }
 
 class ReceiptLookup {
-	bucket: R2Bucket;
-	kv: KVNamespace;
+	readonly bucket: R2Bucket;
+	readonly kv: KVNamespace;
 
 	constructor(bucket: R2Bucket, kv: KVNamespace) {
 		this.bucket = bucket;
@@ -87,10 +88,10 @@ class ReceiptLookup {
 	}
 }
 
-type GetProps = {
-	bucket: R2Bucket;
-	key: API.UnknownLink;
-	kv: KVNamespace;
+interface GetProps {
+	readonly bucket: R2Bucket;
+	readonly key: API.UnknownLink;
+	readonly kv: KVNamespace;
 };
 
 async function get(kind: 'invocation', props: GetProps): Promise<API.Result<API.Invocation, API.RecordNotFound>>;

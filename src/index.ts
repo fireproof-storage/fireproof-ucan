@@ -37,14 +37,18 @@ import { provideConstructor } from './provide';
 ////////////////////////////////////////
 
 interface Context {
-	accessKeyId: string;
-	accountId: string;
-	bucket: R2Bucket;
-	bucketName: string;
-	emailAddress?: string;
-	kvStore: KVNamespace;
-	postmarkToken: string;
-	secretAccessKey: string;
+	readonly accessKeyId: string;
+	readonly accountId: string;
+	readonly bucket: R2Bucket;
+	readonly bucketName: string;
+	readonly emailAddress?: string;
+	readonly kvStore: KVNamespace;
+	readonly postmarkToken: string;
+	readonly secretAccessKey: string;
+	readonly lifetimeInSeconds?: number;
+	readonly productURL?: string;
+	readonly productName?: string;
+	readonly expiresInSeconds?: number
 }
 
 type FireproofServiceContext = AccessServiceContext & Context;
@@ -55,7 +59,7 @@ type FireproofServiceContext = AccessServiceContext & Context;
 
 export type Service = ReturnType<typeof createService>;
 
-const createService = (ctx: FireproofServiceContext) => {
+function createService(ctx: FireproofServiceContext) {
 	const R2 = new AwsClient({
 		accessKeyId: ctx.accessKeyId,
 		secretAccessKey: ctx.secretAccessKey,
@@ -92,11 +96,11 @@ const createService = (ctx: FireproofServiceContext) => {
 
 				// Validate event
 				if (event === null || typeof event !== 'object') return { error: new Server.Failure('Associated clock event is not an object.') };
-				if ('data' in event === false) return { error: new Server.Failure('Associated clock event does not have the `data` property.') };
-				if ('parents' in event === false)
+				if (!('data' in event)) return { error: new Server.Failure('Associated clock event does not have the `data` property.') };
+				if (!('parents' in event))
 					return { error: new Server.Failure('Associated clock event does not have the `parents` property.') };
-				if (Array.isArray(event.parents) === false) {
-					error: new Server.Failure('Associated clock event does not have a valid `parents` property, expected an array.');
+				if (!Array.isArray(event.parents)) {
+					return { error: new Server.Failure('Associated clock event does not have a valid `parents` property, expected an array.') };
 				}
 
 				// Possible TODO: Check if previous head is in event chain?
@@ -134,7 +138,7 @@ const createService = (ctx: FireproofServiceContext) => {
 						issuer: ctx.signer,
 						audience: ctx.signer,
 						with: ctx.signer.did(),
-						lifetimeInSeconds: 60 * 60 * 24 * 2, // 2 days
+						lifetimeInSeconds: ctx.lifetimeInSeconds || 60 * 60 * 24 * 2, // 2 days
 						nb: {
 							cause: invocation.cid,
 						},
@@ -151,8 +155,8 @@ const createService = (ctx: FireproofServiceContext) => {
 						sender: ctx.emailAddress,
 						template: 'share',
 						templateData: {
-							product_url: 'https://fireproof.storage',
-							product_name: 'Fireproof Storage',
+							product_url: ctx.productURL || 'https://fireproof.storage',
+							product_name: ctx.productName || 'Fireproof Storage',
 							email: email,
 							email_share_recipient: DidMailto.toEmail(DidMailto.fromString(capability.nb.recipient)),
 							action_url: url,
@@ -313,7 +317,7 @@ const createService = (ctx: FireproofServiceContext) => {
 			// https://github.com/storacha-network/w3up/blob/e53aa87/packages/capabilities/src/store.js#L41
 			add: provide(Store.add, async ({ capability }) => {
 				const { link, size } = capability.nb;
-				const expiresInSeconds = 60 * 60 * 24; // 1 day
+				const expiresInSeconds = ctx.expiresInSeconds || 60 * 60 * 24; // 1 day
 
 				const endpoint =
 					ctx.url.hostname === 'localhost' ? ctx.url.origin : `https://${ctx.bucketName}.${ctx.accountId}.r2.cloudflarestorage.com`;
@@ -359,7 +363,7 @@ const createService = (ctx: FireproofServiceContext) => {
 // SERVER
 ////////////////////////////////////////
 
-const createServer = async (ctx: FireproofServiceContext) => {
+async function createServer(ctx: FireproofServiceContext) {
 	return Server.create({
 		id: ctx.signer,
 		codec: CAR.inbound,

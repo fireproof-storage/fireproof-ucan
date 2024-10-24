@@ -4,16 +4,16 @@
 import type { KVNamespace, R2Bucket } from '@cloudflare/workers-types';
 
 export interface Env {
-	bucket: R2Bucket;
-	kv_store: KVNamespace;
+	readonly bucket: R2Bucket;
+	readonly kv_store: KVNamespace;
 
-	ACCESS_KEY_ID: string;
-	ACCOUNT_ID: string;
-	BUCKET_NAME: string;
-	CLOUDFLARE_API_TOKEN: string;
-	EMAIL: string;
-	FIREPROOF_SERVICE_PRIVATE_KEY: string;
-	POSTMARK_TOKEN: string;
-	SECRET_ACCESS_KEY: string;
-	SERVICE_ID: string;
+	readonly ACCESS_KEY_ID: string;
+	readonly ACCOUNT_ID: string;
+	readonly BUCKET_NAME: string;
+	readonly CLOUDFLARE_API_TOKEN: string;
+	readonly EMAIL: string;
+	readonly FIREPROOF_SERVICE_PRIVATE_KEY: string;
+	readonly POSTMARK_TOKEN: string;
+	readonly SECRET_ACCESS_KEY: string;
+	readonly SERVICE_ID: string;
 }
