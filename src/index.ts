@@ -48,7 +48,7 @@ interface Context {
 	readonly lifetimeInSeconds?: number;
 	readonly productURL?: string;
 	readonly productName?: string;
-	readonly expiresInSeconds?: number
+	readonly expiresInSeconds?: number;
 }
 
 type FireproofServiceContext = AccessServiceContext & Context;
@@ -97,8 +97,7 @@ function createService(ctx: FireproofServiceContext) {
 				// Validate event
 				if (event === null || typeof event !== 'object') return { error: new Server.Failure('Associated clock event is not an object.') };
 				if (!('data' in event)) return { error: new Server.Failure('Associated clock event does not have the `data` property.') };
-				if (!('parents' in event))
-					return { error: new Server.Failure('Associated clock event does not have the `parents` property.') };
+				if (!('parents' in event)) return { error: new Server.Failure('Associated clock event does not have the `parents` property.') };
 				if (!Array.isArray(event.parents)) {
 					return { error: new Server.Failure('Associated clock event does not have a valid `parents` property, expected an array.') };
 				}
@@ -349,15 +348,15 @@ function createService(ctx: FireproofServiceContext) {
 				if (link === undefined) return { error: new Server.Failure('Expected a link to be present') };
 
 				const result = await ctx.bucket.get(link.toString());
-				if (result === null) return { error: new Server.Failure('Item not found in store') };
+				if (result === null) return { ok: { data: undefined } };
 
 				return {
-					ok: new Uint8Array(await result.arrayBuffer()),
+					ok: { data: new Uint8Array(await result.arrayBuffer()) },
 				};
 			}),
 		},
 	};
-};
+}
 
 ////////////////////////////////////////
 // SERVER
@@ -392,7 +391,7 @@ async function createServer(ctx: FireproofServiceContext) {
 			return capability.with === issuer;
 		},
 	});
-};
+}
 
 ////////////////////////////////////////
 // HANDLER

@@ -107,6 +107,6 @@ describe('The Fireproof UCAN service', () => {
 		});
 
 		if (getResult.out.error) throw getResult.out.error;
-		expect(base64pad.encode(getResult.out.ok)).toEqual(base64pad.encode(new Uint8Array([5, 6, 7, 8])));
+		expect(getResult.out.ok.data && base64pad.encode(getResult.out.ok.data)).toEqual(base64pad.encode(new Uint8Array([5, 6, 7, 8])));
 	});
 });
