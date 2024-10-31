@@ -388,7 +388,7 @@ async function createServer(ctx: FireproofServiceContext) {
 			//   const [did] = capability.uri.pathname.split("/")
 			//   return did === issuer
 			// }
-			return capability.with === issuer;
+			return capability.with === issuer || issuer === ctx.signer.did();
 		},
 	});
 }
