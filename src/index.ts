@@ -173,7 +173,7 @@ function createService(ctx: FireproofServiceContext) {
 					index: AgentMessage.index(message),
 				});
 
-				return { ok: { url } };
+				return { ok: {} };
 			}),
 			'claim-share': provide(Clock.claimShare, async ({ capability }) => {
 				const shareLink = capability.nb.proof.toString();
