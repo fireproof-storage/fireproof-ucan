@@ -477,7 +477,12 @@ export default {
 		if (request.method === 'PUT' && r2 && r2[1] && url.hostname === 'localhost') {
 			await r2Put({ bucket: ctx.bucket, cid: r2[1], request });
 
-			return new Response(null, { status: 202 });
+			const response = new Response(null, { status: 202 });
+
+			response.headers.set('Access-Control-Allow-Origin', '*');
+			response.headers.append('Vary', 'Origin');
+
+			return response;
 		}
 
 		// DID
@@ -600,16 +605,12 @@ export async function r2Put({ bucket, cid, request }: { bucket: R2Bucket; cid: s
 
 const CORS_HEADERS = {
 	'Access-Control-Allow-Origin': '*',
-	'Access-Control-Allow-Methods': 'GET,HEAD,POST,OPTIONS',
+	'Access-Control-Allow-Methods': 'GET,HEAD,POST,PUT,OPTIONS',
 	'Access-Control-Max-Age': '86400',
 };
 
 async function handleOptions(request: Request) {
-	if (
-		request.headers.get('Origin') !== null &&
-		request.headers.get('Access-Control-Request-Method') !== null &&
-		request.headers.get('Access-Control-Request-Headers') !== null
-	) {
+	if (request.headers.get('Origin') !== null && request.headers.get('Access-Control-Request-Method') !== null) {
 		// Handle CORS preflight requests.
 		return new Response(null, {
 			headers: {
