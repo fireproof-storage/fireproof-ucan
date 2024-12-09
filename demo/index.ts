@@ -151,8 +151,13 @@ if (getResp.out.error) {
 	process.exit(1);
 }
 
+if (getResp.out.ok.data === undefined) {
+	console.error('Clock event not found');
+	process.exit(1);
+}
+
 const block = await Block.decode({
-	bytes: getResp.out.ok,
+	bytes: getResp.out.ok.data,
 	codec: CBOR,
 	hasher: sha256,
 });
@@ -249,7 +254,6 @@ const claim = async () => {
 			audience: server,
 			with: agentBob.signer.did(),
 			nb: {
-				issuer: persona.did(), // Sharer
 				recipient: sharePersona.did(), // Receiver
 				proof: share.delegation.cid,
 			},
