@@ -14,7 +14,7 @@
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.4.5",
-		"@cloudflare/workers-types": "^4.20240722.0",
+		"@cloudflare/workers-types": "^4.20250214",
 		"@ipld/dag-ucan": "^3.4.0",
 		"@types/minimist": "^1.2.5",
 		"@web3-storage/filecoin-client": "^3.3.3",
@@ -22,7 +22,7 @@
 		"minimist": "^1.2.8",
 		"typescript": "^5.5.2",
 		"vitest": "1.4.x",
-		"wrangler": "^3.78.6"
+		"wrangler": "^3.107.3"
 	},
 	"dependencies": {
 		"@ipld/dag-cbor": "^9.2.1",
@@ -42,5 +42,13 @@
 		"it-all": "^3.0.6",
 		"multiformats": "^13.2.1",
 		"uint8arrays": "^5.1.0"
+	},
+	"pnpm": {
+		"ignoredBuiltDependencies": [
+			"sharp"
+		],
+		"onlyBuiltDependencies": [
+			"workerd"
+		]
 	}
 }

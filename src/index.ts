@@ -499,6 +499,10 @@ export default {
 			return response;
 		}
 
+		if (url.pathname === '/health') {
+			return new Response('OK', { status: 200 });
+		}
+
 		// Otherwise manage UCANTO RPC request
 		if (request.method !== 'POST' || !request.body) {
 			throw new Error('Server only accepts POST requests');
