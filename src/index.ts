@@ -595,12 +595,12 @@ export async function r2Put({ bucket, cid, request }: { bucket: R2Bucket; cid: s
 	// const url = new URL(request.url);
 	// TODO: check if link is expired and if store/add capability was invoked
 
-	const givenCID = CID.parse(cid);
-	const hash = await ShaHash.sha256.digest(bytes);
+	// const givenCID = CID.parse(cid);
+	// const hash = await ShaHash.sha256.digest(bytes);
 
-	if (Uint8Arrays.compare(givenCID.multihash.digest, hash.digest) !== 0) {
-		throw new Error('Content did not match given CID');
-	}
+	// if (Uint8Arrays.compare(givenCID.multihash.digest, hash.digest) !== 0) {
+	// 	throw new Error('Content did not match given CID');
+	// }
 
 	await bucket.put(cid, bytes);
 }
